@@ -22,7 +22,7 @@ export function AppLayout() {
     <div className="min-h-screen flex bg-background">
       <SideNav />
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="sticky top-0 z-30 h-14 border-b bg-background/85 backdrop-blur flex items-center justify-between px-4 sm:px-6">
+        <header className="sticky top-0 z-30 min-h-14 pt-[env(safe-area-inset-top,0px)] border-b bg-background/85 backdrop-blur flex items-center justify-between px-4 sm:px-6">
           <h1 className="text-base sm:text-lg font-semibold tracking-tight">{title}</h1>
           <Button
             variant="ghost"

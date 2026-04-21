@@ -21,9 +21,10 @@ export default defineConfig(({ mode }) => ({
         name: "WarrantyOps — Shop Warranty Manager",
         short_name: "WarrantyOps",
         description: "Track laptops, computer parts and customer warranties. Works offline.",
-        theme_color: "#1d4ed8",
-        background_color: "#ffffff",
+        theme_color: "#0a0c10",
+        background_color: "#0a0c10",
         display: "standalone",
+        display_override: ["window-controls-overlay", "standalone", "minimal-ui"],
         start_url: "/",
         icons: [
           {
