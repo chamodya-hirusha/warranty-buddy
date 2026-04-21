@@ -4,6 +4,7 @@ import { BottomNav } from "./BottomNav";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
+import { PWAInstallBanner } from "./PWAInstallBanner";
 
 const TITLES: Record<string, string> = {
   "/": "Dashboard",
@@ -40,6 +41,7 @@ export function AppLayout() {
         </main>
       </div>
       <BottomNav />
+      <PWAInstallBanner />
     </div>
   );
 }
