@@ -21,7 +21,10 @@ export function registerSW() {
   }
 
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/service-worker.js").catch((err) => {
+    // VitePWA generates 'sw.js' by default
+    navigator.serviceWorker.register("/sw.js").then((registration) => {
+      console.log("SW registered:", registration);
+    }).catch((err) => {
       console.warn("SW registration failed:", err);
     });
   });
