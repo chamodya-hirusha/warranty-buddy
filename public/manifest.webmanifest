@@ -1,0 +1,11 @@
+{
+  "name": "WarrantyOps — Shop Warranty Manager",
+  "short_name": "WarrantyOps",
+  "description": "Track laptops, computer parts and customer warranties. Works offline.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5f7fb",
+  "theme_color": "#1d4ed8"
+}

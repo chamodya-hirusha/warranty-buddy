@@ -1,0 +1,151 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   Warranty Manager — Design System
+   All colors HSL. No raw colors in components.
+   ============================================================ */
+
+@layer base {
+  :root {
+    --background: 220 30% 98%;
+    --foreground: 222 30% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 30% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 30% 12%;
+
+    /* Brand: deep indigo-blue */
+    --primary: 224 76% 48%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 224 95% 65%;
+
+    --secondary: 220 20% 94%;
+    --secondary-foreground: 222 30% 18%;
+
+    --muted: 220 20% 95%;
+    --muted-foreground: 220 10% 42%;
+
+    --accent: 224 76% 96%;
+    --accent-foreground: 224 76% 30%;
+
+    --destructive: 0 78% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 18% 90%;
+    --input: 220 18% 90%;
+    --ring: 224 76% 48%;
+
+    --radius: 0.85rem;
+
+    /* Status colors */
+    --status-active: 152 65% 42%;
+    --status-active-bg: 152 65% 94%;
+    --status-soon: 38 95% 50%;
+    --status-soon-bg: 38 95% 94%;
+    --status-expired: 0 78% 55%;
+    --status-expired-bg: 0 78% 96%;
+
+    /* Surfaces & gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-surface: linear-gradient(180deg, hsl(220 30% 99%), hsl(220 30% 96%));
+    --shadow-card: 0 1px 2px hsl(222 30% 12% / 0.04), 0 8px 24px -12px hsl(222 30% 12% / 0.08);
+    --shadow-elevated: 0 10px 30px -10px hsl(var(--primary) / 0.35);
+
+    --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 30% 18%;
+    --sidebar-primary: 224 76% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 20% 95%;
+    --sidebar-accent-foreground: 222 30% 18%;
+    --sidebar-border: 220 18% 90%;
+    --sidebar-ring: 224 76% 48%;
+  }
+
+  .dark {
+    --background: 222 35% 7%;
+    --foreground: 220 20% 96%;
+
+    --card: 222 30% 10%;
+    --card-foreground: 220 20% 96%;
+
+    --popover: 222 30% 10%;
+    --popover-foreground: 220 20% 96%;
+
+    --primary: 224 95% 65%;
+    --primary-foreground: 222 35% 7%;
+    --primary-glow: 199 95% 65%;
+
+    --secondary: 222 25% 15%;
+    --secondary-foreground: 220 20% 96%;
+
+    --muted: 222 25% 14%;
+    --muted-foreground: 220 12% 65%;
+
+    --accent: 224 60% 18%;
+    --accent-foreground: 224 95% 80%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 222 25% 18%;
+    --input: 222 25% 18%;
+    --ring: 224 95% 65%;
+
+    --status-active: 152 60% 50%;
+    --status-active-bg: 152 50% 14%;
+    --status-soon: 38 95% 60%;
+    --status-soon-bg: 38 60% 14%;
+    --status-expired: 0 75% 60%;
+    --status-expired-bg: 0 50% 16%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-surface: linear-gradient(180deg, hsl(222 35% 8%), hsl(222 35% 6%));
+    --shadow-card: 0 1px 2px hsl(0 0% 0% / 0.3), 0 8px 24px -12px hsl(0 0% 0% / 0.5);
+    --shadow-elevated: 0 10px 30px -10px hsl(var(--primary) / 0.5);
+
+    --sidebar-background: 222 30% 9%;
+    --sidebar-foreground: 220 20% 90%;
+    --sidebar-primary: 224 95% 65%;
+    --sidebar-primary-foreground: 222 35% 7%;
+    --sidebar-accent: 222 25% 14%;
+    --sidebar-accent-foreground: 220 20% 96%;
+    --sidebar-border: 222 25% 18%;
+    --sidebar-ring: 224 95% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html, body, #root {
+    @apply h-full;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+@layer components {
+  .surface {
+    background: var(--gradient-surface);
+  }
+  .card-elevated {
+    @apply bg-card rounded-[var(--radius)] border;
+    box-shadow: var(--shadow-card);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+  }
+  .card-elevated:hover {
+    box-shadow: var(--shadow-elevated);
+  }
+  .mono {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+}
