@@ -5,8 +5,8 @@ require('dotenv').config();
 async function init() {
   const url = process.env.DATABASE_URL;
   if (!url) {
-    console.error("DATABASE_URL is not set in .env");
-    process.exit(1);
+    console.warn("⚠️ DATABASE_URL is not set. Skipping database initialization.");
+    return;
   }
 
   // Parse URL: mysql://user:password@host:port/database
@@ -21,6 +21,12 @@ async function init() {
   } catch (err) {
     console.error("Invalid DATABASE_URL format");
     process.exit(1);
+  }
+
+  // Skip database setup during CI/CD builds (e.g. Vercel) where localhost is unreachable
+  if (process.env.VERCEL || process.env.CI) {
+    console.log("ℹ️ CI/CD environment detected. Skipping database initialization at build time.");
+    return;
   }
 
   try {
