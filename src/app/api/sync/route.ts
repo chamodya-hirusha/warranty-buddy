@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 function sanitizePayload(data: any) {
   if (!data) return {};
   const payload: any = {};

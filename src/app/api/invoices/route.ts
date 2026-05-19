@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getAuthContext } from "@/lib/auth";
 import { createInvoice } from "@/services/invoice.service";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: Request) {
   try {
     const { tenantId, userId } = getAuthContext();
