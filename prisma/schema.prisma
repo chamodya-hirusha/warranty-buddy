@@ -1,0 +1,309 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Tenant {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users       User[]
+  branches    Branch[]
+  customers   Customer[]
+  products    Product[]
+  suppliers   Supplier[]
+  invoices    Invoice[]
+  repairs     Repair[]
+  expenses    Expense[]
+  settings    Setting[]
+  auditLogs   AuditLog[]
+  cheques     Cheque[]
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  roleId    String
+  tenantId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  role      Role      @relation(fields: [roleId], references: [id])
+  tenant    Tenant    @relation(fields: [tenantId], references: [id])
+  auditLogs AuditLog[]
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  permissions Permission[]
+  users       User[]
+}
+
+model Permission {
+  id    String @id @default(cuid())
+  name  String @unique
+  roles Role[]
+}
+
+model Branch {
+  id        String   @id @default(cuid())
+  name      String
+  tenantId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant    Tenant    @relation(fields: [tenantId], references: [id])
+  products  Product[]
+  invoices  Invoice[]
+  repairs   Repair[]
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String
+  email     String?
+  address   String?
+  whatsapp  String?
+  birthday  DateTime?
+  tenantId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant     Tenant     @relation(fields: [tenantId], references: [id])
+  warranties Warranty[]
+  invoices   Invoice[]
+  repairs    Repair[]
+}
+
+model Supplier {
+  id        String   @id @default(cuid())
+  name      String
+  company   String
+  phone     String
+  email     String?
+  tenantId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant    Tenant    @relation(fields: [tenantId], references: [id])
+  products  Product[]
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  products  Product[]
+}
+
+model Brand {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  products  Product[]
+}
+
+model Model {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  products  Product[]
+}
+
+model Product {
+  id             String   @id @default(cuid())
+  name           String
+  sku            String?  @unique
+  serial         String?
+  barcode        String?
+  costPrice      Decimal
+  sellPrice      Decimal
+  quantity       Int      @default(0)
+  warrantyPeriod Int?     // in months
+  categoryId     String?
+  brandId        String?
+  modelId        String?
+  supplierId     String?
+  tenantId       String
+  branchId       String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  category   Category? @relation(fields: [categoryId], references: [id])
+  brand      Brand?    @relation(fields: [brandId], references: [id])
+  model      Model?    @relation(fields: [modelId], references: [id])
+  supplier   Supplier? @relation(fields: [supplierId], references: [id])
+  tenant     Tenant    @relation(fields: [tenantId], references: [id])
+  branch     Branch?   @relation(fields: [branchId], references: [id])
+  warranties Warranty[]
+  invoiceItems InvoiceItem[]
+  stockMovements StockMovement[]
+}
+
+model StockMovement {
+  id        String   @id @default(cuid())
+  productId String
+  quantity  Int
+  type      String   // IN or OUT
+  reason    String?
+  createdAt DateTime @default(now())
+
+  product   Product  @relation(fields: [productId], references: [id])
+}
+
+model Invoice {
+  id        String   @id @default(cuid())
+  number    String   @unique
+  customerId String
+  tenantId  String
+  branchId  String?
+  total     Decimal
+  date      DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customer  Customer @relation(fields: [customerId], references: [id])
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  branch    Branch?  @relation(fields: [branchId], references: [id])
+  items     InvoiceItem[]
+  payments  Payment[]
+}
+
+model InvoiceItem {
+  id        String   @id @default(cuid())
+  invoiceId String
+  productId String
+  quantity  Int
+  price     Decimal
+
+  invoice   Invoice  @relation(fields: [invoiceId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+}
+
+model Payment {
+  id        String   @id @default(cuid())
+  invoiceId String
+  amount    Decimal
+  type      String   // CASH, CHEQUE, etc.
+  date      DateTime @default(now())
+  
+  // Cheque fields (optional)
+  chequeNumber String?
+  bankName     String?
+  chequeDate   DateTime?
+  reminderDate DateTime?
+  status       String? // PENDING, CLEARED, RETURNED
+
+  invoice   Invoice  @relation(fields: [invoiceId], references: [id])
+}
+
+model Warranty {
+  id           String   @id @default(cuid())
+  productId    String
+  customerId   String
+  purchaseDate DateTime @default(now())
+  expiryDate   DateTime
+  tenantId     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  product    Product  @relation(fields: [productId], references: [id])
+  customer   Customer @relation(fields: [customerId], references: [id])
+}
+
+model Repair {
+  id          String   @id @default(cuid())
+  customerId  String
+  deviceId    String?  // Could link to product or just text
+  deviceName  String
+  problem     String
+  statusId    String
+  cost        Decimal?
+  techNotes   String?
+  tenantId    String
+  branchId    String?
+  receivedDate DateTime @default(now())
+  deliveryDate DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  customer    Customer @relation(fields: [customerId], references: [id])
+  status      RepairStatus @relation(fields: [statusId], references: [id])
+  tenant      Tenant   @relation(fields: [tenantId], references: [id])
+  branch      Branch?  @relation(fields: [branchId], references: [id])
+}
+
+model RepairStatus {
+  id      String   @id @default(cuid())
+  name    String   @unique // Pending, Diagnosing, etc.
+  repairs Repair[]
+}
+
+model Expense {
+  id        String   @id @default(cuid())
+  title     String
+  category  String
+  amount    Decimal
+  date      DateTime @default(now())
+  tenantId  String
+  createdAt DateTime @default(now())
+
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  userId    String?
+  createdAt DateTime @default(now())
+}
+
+model Setting {
+  id        String   @id @default(cuid())
+  key       String
+  value     String
+  tenantId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+
+  @@unique([key, tenantId])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  entity    String
+  entityId  String?
+  userId    String?
+  tenantId  String
+  createdAt DateTime @default(now())
+
+  user      User?    @relation(fields: [userId], references: [id])
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+}
+
+model Cheque {
+  id           String   @id @default(cuid())
+  number       String
+  bank         String
+  amount       Decimal
+  date         DateTime
+  status       String   // pending, cleared, returned
+  tenantId     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  tenant       Tenant   @relation(fields: [tenantId], references: [id])
+}
