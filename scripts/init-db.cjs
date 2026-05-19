@@ -5,8 +5,12 @@ require('dotenv').config();
 async function init() {
   const url = process.env.DATABASE_URL;
   if (!url) {
-    console.warn("⚠️ DATABASE_URL is not set. Skipping database initialization.");
-    return;
+    if (process.env.VERCEL || process.env.CI) {
+      console.log("ℹ️ CI/CD environment detected. Skipping database initialization at build time.");
+      return;
+    }
+    console.error("❌ Error: DATABASE_URL is not set in .env! Database initialization failed.");
+    process.exit(1);
   }
 
   // Parse URL: mysql://user:password@host:port/database
